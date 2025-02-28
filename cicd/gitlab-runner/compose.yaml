@@ -1,16 +1,19 @@
-  gitlab-runner1:
-    image: gitlab/gitlab-runner:alpine
-    restart: always
-    container_name: gitlab-runner1
-    hostname: gitlab-runner1
-    depends_on:
-      - gitlab-web
-    volumes:
-     - ./config:/etc/gitlab-runner
-     - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-        - gitlab-network
+version: "3.7"
+
+services:
+  gitlab-runner:
+      image: gitlab/gitlab-runner:v1.8.0
+      restart: always
+      container_name: gitlab-runner
+      hostname: gitlab-runner
+      volumes:
+       - ./config:/etc/gitlab-runner
+       - /var/run/docker.sock:/var/run/docker.sock
+      networks:
+          - gitlab-network
 
 networks:
-  gitlab-network:
-    name: gitlab-network
+  driver: host
+  #  gitlab-network:
+  #    name: gitlab-network
+  #    external: true
