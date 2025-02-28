@@ -1,0 +1,15 @@
+concurrent = 1
+check_interval = 0
+
+[[runners]]
+  name = "iranak"
+  url = "https://gitlab.com"
+  token = "GR1348941x95GuxjpRTMZFn3njVhY"
+  executor = "docker"
+  [runners.docker]
+    tls_verify = false
+    image = "alpine"
+    privileged = false
+    disable_cache = false
+    volumes = ["/cache"]
+  [runners.cache]
