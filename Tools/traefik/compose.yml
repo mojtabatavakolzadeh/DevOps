@@ -54,6 +54,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web_net"
+      # Traefik
       - "traefik.http.routers.traefik.entrypoints=http"
       - "traefik.http.routers.traefik.rule=Host(`${SUB}.${DOMAIN_ADDR}`)"
       - "traefik.http.middlewares.web-auth.basicauth.users=${WEB_AUTH_USER}:${WEB_AUTH_PASS}"
