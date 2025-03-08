@@ -1,7 +1,7 @@
 networks:
-  # app_net:
-  #   external: true
-  #   name: app_net
+  app_net:
+    external: true
+    name: app_net
   web_net:
     external: true
     name: web_net
@@ -31,7 +31,11 @@ services:
       retries: 3
     networks:
       - web_net
-      # - app_net
+      - app_net
+    extra_hosts:  # set hostname traefik for loadbalance
+      - "object.tavakolzadeh.ir:172.20.0.2"
+      - "api.object.tavakolzadeh.ir:172.20.0.2"
+
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=web_net"

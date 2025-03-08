@@ -1,8 +1,6 @@
-version: "3.7"
-
 services:
   gitlab-runner:
-      image: gitlab/gitlab-runner:v1.8.0
+      image: repo.tavakolzadeh.ir:8082/gitlab/gitlab-runner:latest
       restart: always
       container_name: gitlab-runner
       hostname: gitlab-runner
@@ -10,10 +8,14 @@ services:
        - ./config:/etc/gitlab-runner
        - /var/run/docker.sock:/var/run/docker.sock
       networks:
-          - gitlab-network
+       - web_net
+      extra_hosts:  # set hostname traefik for loadbalance
+        - "git.tavakolzadeh.ir:172.20.0.2"
 
 networks:
-  driver: host
   #  gitlab-network:
   #    name: gitlab-network
   #    external: true
+   web_net:
+     name: web_net
+     external: true
