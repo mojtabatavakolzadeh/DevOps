@@ -1,0 +1,1 @@
+place ip container traefik in file /etc/hosts for access ui minio
