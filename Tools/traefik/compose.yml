@@ -68,4 +68,5 @@ services:
       - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
       - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     networks:
-      - web_net
+      web_net:
+        ipv4_address: 172.20.0.2  # Static IP assigned
