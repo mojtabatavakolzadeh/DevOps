@@ -1,0 +1,13 @@
+server:
+  http_listen_port: 3100
+
+compactor:
+  data_dir: /data/mimir/compactor
+  compaction_interval: 10m
+
+limits:
+  compactor_blocks_retention_period: 48h
+
+ruler:
+  enable_api: true
+  rule_path: /data/mimir/rules
