@@ -13,7 +13,7 @@ volumes:
 services:
   minio:
     image: quay.io/minio/minio:RELEASE.2023-08-16T20-17-30Z
-    command: server --console-address ":9001" /data
+    command: server --console-address ":9001" --address ":9000" /data
     container_name: minio
     hostname: minio
     restart: ${RESTART_POLICY}
@@ -51,7 +51,7 @@ services:
       # API Minio
       - "traefik.http.routers.minio-api.entrypoints=http"
       - "traefik.http.routers.minio-api.rule=Host(`${MINIO_SUB2}.${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
-      - "traefik.http.routers.minio-api.middlewares=https-redirect@docker"
+      - "traefik.http.routers.minio-api.middlewares=https-redirect"
       - "traefik.http.routers.minio-api-secure.entrypoints=https"
       - "traefik.http.routers.minio-api-secure.rule=Host(`${MINIO_SUB2}.${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
       - "traefik.http.routers.minio-api-secure.tls=true"
