@@ -1,0 +1,23 @@
+IMAGE_ubuntu_2204   = "bento/ubuntu-22.04"
+IMAGE_Debian_12     = "bento/debian-12"
+
+Vagrant.configure("2") do |config|
+  # Enable the proxy plugin
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http     = "http://192.168.1.3:2334"
+    config.proxy.https    = "http://192.168.1.3:2334"
+    config.proxy.no_proxy = "localhost,127.0.0.1"
+  end
+
+  config.vm.box = IMAGE_ubuntu_2204
+  config.vm.network "public_network", bridge: "wlp0s20f3"
+  config.vm.hostname = "docker-practice"
+
+  config.vm.provider "virtualbox" do |my_vm|
+    my_vm.name = "swarm-practice"
+    my_vm.memory = 1024
+    my_vm.cpus = 1
+  end
+
+  config.vm.provision :shell, path: "bootstrap.sh"
+end
