@@ -3,7 +3,7 @@
 # Variable section
 ADMIN_USERNAME="admin"
 ADMIN_PASSWORD="tGmUnxf2dMYl9p"
-NEXUS_URL="http://repo.tavakolzadeh.ir:8081"
+NEXUS_URL="https://repo.tavakolzadeh.ir"
 
 # New user information
 REPO_USERNAME="mojtaba"
