@@ -1,12 +1,7 @@
 networks:
-  vpn_net:
+  web_net:
     external: true
-    name: vpn_net
-  # app_net:
-  #   external: true
-  #   name: app_net
-
-
+    name: web_net
 
 services:
   hiddify:
@@ -16,15 +11,8 @@ services:
     restart: ${RESTART_POLICY}
     volumes:
       - ./config.json:/etc/hiddify/hiddify.json
-    # networks:
-    #   - web_net
     privileged: true
     networks:
-      - vpn_net
+      - web_net
     environment:
       - TZ=Asia/Tehran
-    ports:
-      - 3334:2334
-      - 3335:2335
-      - 7756:6756
-      - 7450:6450
