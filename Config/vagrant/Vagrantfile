@@ -6,10 +6,10 @@ Vagrant.configure("2") do |config|
   if Vagrant.has_plugin?("vagrant-proxyconf")
     config.proxy.http     = "http://192.168.1.3:2334"
     config.proxy.https    = "http://192.168.1.3:2334"
-    config.proxy.no_proxy = "localhost,127.0.0.1"
+    config.proxy.no_proxy = "localhost,127.0.0.1, *.tavakolzadeh.ir"
   end
 
-  config.vm.box = IMAGE_ubuntu_2204
+  config.vm.box = IMAGE_Debian_12
   config.vm.network "public_network", bridge: "wlp0s20f3"
   config.vm.hostname = "docker-practice"
 
