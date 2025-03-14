@@ -1,0 +1,10 @@
+---
+- name: Add user user_config
+  ansible.builtin.user:
+    name: "{{ user_config }}"
+    state: present
+    comment: User for config
+    create_home: true
+    password: "{{ 'cXwhXTncsa2BAq' | password_hash('sha512') }}"
+    group: sudo
+    shell: /bin/bash
