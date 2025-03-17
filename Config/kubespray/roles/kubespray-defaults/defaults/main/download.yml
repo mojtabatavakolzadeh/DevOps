@@ -85,17 +85,17 @@ cri_dockerd_version: "{{ (cri_dockerd_archive_checksums['amd64'] | dict2items)[0
 docker_containerd_version: 1.6.32
 
 # gcr and kubernetes image repo define
-gcr_image_repo: "gcr.io"
-kube_image_repo: "registry.k8s.io"
+gcr_image_repo: "registry.tavakolzadeh.ir"
+kube_image_repo: "registry.tavakolzadeh.ir"
 
 # docker image repo define
-docker_image_repo: "docker.io"
+docker_image_repo: "registry.tavakolzadeh.ir"
 
 # quay image repo define
-quay_image_repo: "quay.io"
+quay_image_repo: "registry.tavakolzadeh.ir"
 
 # github image repo define (ex multus only use that)
-github_image_repo: "ghcr.io"
+github_image_repo: "registry.tavakolzadeh.ir"
 
 # TODO(mattymo): Move calico versions to roles/network_plugins/calico/defaults
 # after migration to container download
@@ -161,8 +161,8 @@ scheduler_plugins_version: "{{ scheduler_plugins_supported_versions[kube_major_v
 
 yq_version: "{{ (yq_checksums['amd64'] | dict2items)[0].key }}"
 
-github_url: https://github.com
-dl_k8s_io_url: https://dl.k8s.io
+github_url: https://repo.tavakolzadeh.ir/repository/github-com/
+dl_k8s_io_url: https://repo.tavakolzadeh.ir/repository/pkg-k8s/
 storage_googleapis_url: https://storage.googleapis.com
 get_helm_url: https://get.helm.sh
 

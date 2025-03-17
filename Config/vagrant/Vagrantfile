@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
     debian1.vm.provider "virtualbox" do |vb|
       vb.name = "master-node1"
       vb.memory = 2048
-      vb.cpus = 1
+      vb.cpus = 2
     end
     debian1.vm.provision :shell, path: "bootstrap.sh"
   end
@@ -29,7 +29,7 @@ Vagrant.configure("2") do |config|
     debian2.vm.provider "virtualbox" do |vb|
       vb.name = "worker-node1"
       vb.memory = 2048
-      vb.cpus = 1
+      vb.cpus = 2
     end
     debian2.vm.provision :shell, path: "bootstrap.sh"
   end
@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
     debian3.vm.provider "virtualbox" do |vb|
       vb.name = "worker-node2"
       vb.memory = 2048
-      vb.cpus = 1
+      vb.cpus = 2
     end
     debian3.vm.provision :shell, path: "bootstrap.sh"
   end
