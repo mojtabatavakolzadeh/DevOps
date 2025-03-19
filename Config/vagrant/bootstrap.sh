@@ -3,6 +3,7 @@
 # Update /etc/hosts file
 echo -e "192.168.1.3\trepo.tavakolzadeh.ir" | sudo tee -a /etc/hosts
 echo -e "192.168.1.3\tregistry.tavakolzadeh.ir" | sudo tee -a /etc/hosts
+sudo sed -i 's/nameserver 10.0.2.3/nameserver 192.168.1.1/' /etc/resolv.conf
 echo -e "192.168.1.100\tmaster-node1" | sudo tee -a /etc/hosts
 echo -e "192.168.1.101\tworker-node1" | sudo tee -a /etc/hosts
 echo -e "192.168.1.102\tworker-node2" | sudo tee -a /etc/hosts

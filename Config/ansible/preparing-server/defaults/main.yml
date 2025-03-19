@@ -1,2 +1,11 @@
 ---
+# User for deploy
 user_config: deploy
+
+# Vars network
+static_ip_master_node1: "192.168.56.10"
+apt_repo: "http://repo.tavakolzadeh.ir/repository"
+network_interface_eth0: "eth0"
+network_interface_eth1: "eth1"
+gateway: "192.168.56.1"
+netmask: "255.255.255.0"

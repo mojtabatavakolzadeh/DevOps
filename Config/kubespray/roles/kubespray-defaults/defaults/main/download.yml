@@ -161,10 +161,10 @@ scheduler_plugins_version: "{{ scheduler_plugins_supported_versions[kube_major_v
 
 yq_version: "{{ (yq_checksums['amd64'] | dict2items)[0].key }}"
 
-github_url: https://repo.tavakolzadeh.ir/repository/github-com/
-dl_k8s_io_url: https://repo.tavakolzadeh.ir/repository/pkg-k8s/
+github_url: https://repo.tavakolzadeh.ir/repository/github-com
+dl_k8s_io_url: https://repo.tavakolzadeh.ir/repository/pkg-k8s
 storage_googleapis_url: https://storage.googleapis.com
-get_helm_url: https://get.helm.sh
+get_helm_url: https://repo.tavakolzadeh.ir/repository/helm/
 
 # Download URLs
 kubelet_download_url: "{{ dl_k8s_io_url }}/release/v{{ kube_version }}/bin/linux/{{ image_arch }}/kubelet"

@@ -1,4 +1,35 @@
 ---
+# Add repos
+- name: File sources.list
+  template:
+    src: sources-list.j2
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: "0644"
+
+# Update and install packages
+- name: Install a list of packages
+  ansible.builtin.apt:
+    force_apt_get: yes
+    name:
+    - vim
+    - util-linux
+    - sudo
+    - gnupg2
+    - curl
+
+- name: Add Kubernetes GPG key with proxy
+  shell: curl --proxy 192.168.1.4:2334 -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  become: yes
+
+- name: Add a line to a file kubernetes.list
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    line: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/pkg-k8s/ /"
+    create: yes
+
+# Task create user
 - name: Add user user_config
   ansible.builtin.user:
     name: "{{ user_config }}"
@@ -8,3 +39,74 @@
     password: "{{ 'cXwhXTncsa2BAq' | password_hash('sha512') }}"
     group: sudo
     shell: /bin/bash
+
+# Disable swap
+- name: disable swap
+  command: sudo swapoff -a
+  changed_when: true
+  when: ansible_swaptotal_mb > 0
+
+- name: remove swap from fstab
+  lineinfile:
+    path: '/etc/fstab'
+    regexp: '\sswap\s'
+    state: 'absent'
+
+# Set hostname
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Update /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1\t{{ inventory_hostname }}"
+    regexp: "^127.0.0.1"
+    state: present
+
+- name: Add all inventory hosts to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item]['ansible_host'] }}\t{{ item }}"
+    regexp: "^{{ hostvars[item]['ansible_host'] }}"
+    state: present
+  loop: "{{ groups['all'] }}"
+
+- name: Remove existing IP entry for this host
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ hostvars[inventory_hostname]['ansible_host'] }}\\s+.*"
+    state: absent
+
+- name: Add multiple host entries to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "192.168.1.4\trepo.tavakolzadeh.ir"
+    - "192.168.1.4\tregistry.tavakolzadeh.ir"
+
+# # Task config static ip
+# - name: Backup existing network configuration
+#   copy:
+#     src: /etc/network/interfaces
+#     dest: /etc/network/interfaces.bak
+#     remote_src: yes
+#     mode: "0644"
+
+# - name: Apply new static IP configuration
+#   template:
+#     src: interfaces.j2
+#     dest: /etc/network/interfaces
+#     owner: root
+#     group: root
+#     mode: "0644"
+
+# - name: Apply IP configuration without reboot
+#   shell: ifdown {{ network_interface_eth0 }} && ifup {{ network_interface_eth0 }}
+#   ignore_errors: yes
+
+# - name: Apply IP configuration without reboot
+#   shell: ifdown {{ network_interface_eth1 }} && ifup {{ network_interface_eth1 }}
+#   ignore_errors: yes
