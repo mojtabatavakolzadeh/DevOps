@@ -13,28 +13,28 @@ services:
     restart: always
     container_name: traefik
     command:
-      # - --log.level=ERROR
-      - --log.filepath=/log-file.log
-      - --log.format=json
-      - --api=true
-      - --api.insecure=true
-      - --ping=true
-      - --accesslog=true
-      - --accesslog.fields.names.StartUTC=drop
-      - --accesslog.bufferingsize=250
-      - --providers.docker.endpoint=unix:///var/run/docker.sock
-      - --providers.docker.exposedbydefault=false
-      - --providers.docker.network=web_net
-      - --entrypoints.http.address=:80
-      - --entrypoints.https.address=:443
-      - --metrics.prometheus=true
-      - --entryPoints.metrics.address=:8082
-      - --metrics.prometheus.entryPoint=metrics
-      - --certificatesresolvers.mycert.acme.email=workmojtavakol1995@gmail.com
-      - --certificatesresolvers.mycert.acme.storage=/acme/acme.json
-      - --certificatesresolvers.mycert.acme.dnschallenge=true
-      - --certificatesresolvers.mycert.acme.dnschallenge.provider=cloudflare
-      - --certificatesresolvers.mycert.acme.dnschallenge.delaybeforecheck=60
+      - "--log.level=ERROR"
+      - "--log.filepath=/log-file.log"
+      - "--log.format=json"
+      - "--api=true"
+      - "--ping=true"
+      - "--accesslog=true"
+      - "--accesslog.fields.names.StartUTC=drop"
+      - "--accesslog.bufferingsize=250"
+      - "--api.insecure=true"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=web_net"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--metrics.prometheus=true"
+      - "--entryPoints.metrics.address=:8082"
+      - "--metrics.prometheus.entryPoint=metrics"
+      - "--certificatesresolvers.mycert.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.mycert.acme.storage=/acme/acme.json"
+      - "--certificatesresolvers.mycert.acme.dnschallenge=true"
+      - "--certificatesresolvers.mycert.acme.dnschallenge.provider=cloudflare"
+      - "--certificatesresolvers.mycert.acme.dnschallenge.delaybeforecheck=60"
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
@@ -52,30 +52,21 @@ services:
       retries: 3
       start_period: 5s
     labels:
-      - traefik.enable=true
-      - traefik.docker.network=web_net
-      - traefik.http.middlewares.web-auth.basicauth.users=MeCan:{SHA}CoRQvjVmLEf/Boi7dqaR84EijYo=
-      - traefik.http.routers.traefik.middlewares=https-redirect
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.routers.traefik.entrypoints=http
-      - traefik.http.routers.traefik.rule=Host(`${SUB}.${DOMAIN_ADDR}`)
-      - traefik.http.routers.traefik-secure.entrypoints=https
-      - traefik.http.routers.traefik-secure.rule=Host(`${SUB}.${DOMAIN_ADDR}`)
-      - traefik.http.routers.traefik-secure.tls=true
-      - traefik.http.routers.traefik-secure.tls.options=default
-      - traefik.http.routers.traefik-secure.middlewares=secure@file,web-auth
-      - traefik.http.routers.traefik-secure.tls.certresolver=mycert
-      - traefik.http.routers.traefik-secure.service=traefik
-      - traefik.http.services.traefik.loadbalancer.server.port=8080
-      - traefik.http.routers.traefik_metrics.entrypoints=http
-      - traefik.http.routers.traefik_metrics.rule=Host(`${TRA_METRICS}.${DOMAIN_ADDR}`)
-      - traefik.http.routers.traefik_metrics-secure.entrypoints=https
-      - traefik.http.routers.traefik_metrics-secure.rule=Host(`${TRA_METRICS}.${DOMAIN_ADDR}`)
-      - traefik.http.routers.traefik_metrics-secure.tls=true
-      - traefik.http.routers.traefik_metrics-secure.tls.options=default
-      - traefik.http.routers.traefik_metrics-secure.middlewares=secure@file,web-auth
-      - traefik.http.routers.traefik_metrics-secure.tls.certresolver=mycert
-      - traefik.http.routers.traefik_metrics-secure.service=metrics
-      - traefik.http.services.metrics.loadbalancer.server.port=8082
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_net"
+      # Traefik
+      - "traefik.http.routers.traefik.entrypoints=http"
+      - "traefik.http.routers.traefik.rule=Host(`${SUB}.${DOMAIN_ADDR}`)"
+      - "traefik.http.middlewares.web-auth.basicauth.users=${WEB_AUTH_USER}:${WEB_AUTH_PASS}"
+      - "traefik.http.routers.traefik.middlewares=https-redirect"
+      - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.traefik-secure.entrypoints=https"
+      - "traefik.http.routers.traefik-secure.rule=Host(`${SUB}.${DOMAIN_ADDR}`)"
+      - "traefik.http.routers.traefik-secure.tls=true"
+      - "traefik.http.routers.traefik-secure.tls.options=default"
+      - "traefik.http.routers.traefik-secure.middlewares=web-auth"
+      - "traefik.http.routers.traefik-secure.tls.certresolver=mycert"
+      - "traefik.http.services.traefik.loadbalancer.server.port=8080"
     networks:
-      - web_net
+      web_net:
+        ipv4_address: 172.20.0.2  # Static IP assigned

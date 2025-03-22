@@ -1,0 +1,14 @@
+deb http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy universe
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy universe
+deb http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy-updates universe
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy-updates universe
+    
+deb http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy multiverse
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy multiverse
+deb http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy-updates multiverse
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu/ jammy-updates multiverse
+    
+deb http://repo.tavakolzadeh.ir/repository/ubuntu-security/ jammy-security universe
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu-security/ jammy-security universe
+deb http://repo.tavakolzadeh.ir/repository/ubuntu-security/ jammy-security multiverse
+deb-src http://repo.tavakolzadeh.ir/repository/ubuntu-security/ jammy-security multiverse

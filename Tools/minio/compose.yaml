@@ -1,9 +1,7 @@
-version: "3.8"
-
 networks:
-  # app_net:
-  #   external: true
-  #   name: app_net
+  app_net:
+    external: true
+    name: app_net
   web_net:
     external: true
     name: web_net
@@ -14,8 +12,8 @@ volumes:
 
 services:
   minio:
-    image: repo.tavakolzadeh.ir:8082/minio/minio
-    command: server --console-address ":9001" /data
+    image: quay.io/minio/minio:RELEASE.2023-08-16T20-17-30Z
+    command: server --console-address ":9001" --address ":9000" /data
     container_name: minio
     hostname: minio
     restart: ${RESTART_POLICY}
@@ -24,7 +22,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_SERVER_URL: https://${MINIO_SUB2}.${DOMAIN_ADDRESS}
+      MINIO_SERVER_URL: https://${MINIO_SUB2}.${MINIO_SUB1}.${DOMAIN_ADDRESS}
       MINIO_BROWSER_REDIRECT_URL: https://${MINIO_SUB1}.${DOMAIN_ADDRESS}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
@@ -33,30 +31,35 @@ services:
       retries: 3
     networks:
       - web_net
-      # - app_net
+      - app_net
+    extra_hosts:  # set hostname traefik for loadbalance
+      - "object.tavakolzadeh.ir:172.20.0.2"
+      - "api.object.tavakolzadeh.ir:172.20.0.2"
 
-    ## Config for traefik
-    # labels:
-    #   - "traefik.enable=true"
-    #   - "traefik.docker.network=web_net"
-    #   - "traefik.http.routers.minio.entrypoints=http"
-    #   - "traefik.http.routers.minio.rule=Host(`${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
-    #   - "traefik.http.routers.minio.middlewares=https-redirect"
-    #   - "traefik.http.middlewares.https-redirect.redirectscheme.scheme=https"
-    #   - "traefik.http.routers.minio-secure.entrypoints=https"
-    #   - "traefik.http.routers.minio-secure.rule=Host(`${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
-    #   - "traefik.http.routers.minio-secure.tls=true"
-    #   - "traefik.http.routers.minio-secure.tls.options=default"
-    #   - "traefik.http.routers.minio-secure.tls.certresolver=mycert"
-    #   - "traefik.http.routers.minio-secure.service=minio"
-    #   - "traefik.http.services.minio.loadbalancer.server.port=9001"
-    #   - "traefik.http.routers.minio-api.entrypoints=http"
-    #   - "traefik.http.routers.minio-api.rule=Host(`${MINIO_SUB2}.${DOMAIN_ADDRESS}`)"
-    #   - "traefik.http.routers.minio-api.middlewares=https-redirect"
-    #   - "traefik.http.routers.minio-api-secure.entrypoints=https"
-    #   - "traefik.http.routers.minio-api-secure.rule=Host(`${MINIO_SUB2}.${DOMAIN_ADDRESS}`)"
-    #   - "traefik.http.routers.minio-api-secure.tls=true"
-    #   - "traefik.http.routers.minio-api-secure.tls.options=default"
-    #   - "traefik.http.routers.minio-api-secure.tls.certresolver=mycert"
-    #   - "traefik.http.routers.minio-api-secure.service=minio-api"
-    #   - "traefik.http.services.minio-api.loadbalancer.server.port=9000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=web_net"
+      
+      # Minio
+      - "traefik.http.routers.minio.entrypoints=http"
+      - "traefik.http.routers.minio.rule=Host(`${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
+      - "traefik.http.routers.minio.middlewares=https-redirect"
+      - "traefik.http.routers.minio-secure.entrypoints=https"
+      - "traefik.http.routers.minio-secure.rule=Host(`${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
+      - "traefik.http.routers.minio-secure.tls=true"
+      - "traefik.http.routers.minio-secure.tls.options=default"
+      - "traefik.http.routers.minio-secure.tls.certresolver=mycert"
+      - "traefik.http.routers.minio-secure.service=minio"
+      - "traefik.http.services.minio.loadbalancer.server.port=9001"
+
+      # API Minio
+      - "traefik.http.routers.minio-api.entrypoints=http"
+      - "traefik.http.routers.minio-api.rule=Host(`${MINIO_SUB2}.${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
+      - "traefik.http.routers.minio-api.middlewares=https-redirect"
+      - "traefik.http.routers.minio-api-secure.entrypoints=https"
+      - "traefik.http.routers.minio-api-secure.rule=Host(`${MINIO_SUB2}.${MINIO_SUB1}.${DOMAIN_ADDRESS}`)"
+      - "traefik.http.routers.minio-api-secure.tls=true"
+      - "traefik.http.routers.minio-api-secure.tls.options=default"
+      - "traefik.http.routers.minio-api-secure.tls.certresolver=mycert"
+      - "traefik.http.routers.minio-api-secure.service=minio-api"
+      - "traefik.http.services.minio-api.loadbalancer.server.port=9000"

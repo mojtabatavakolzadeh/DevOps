@@ -3,7 +3,7 @@
 # Variable section
 ADMIN_USERNAME="admin"
 ADMIN_PASSWORD="tGmUnxf2dMYl9p"
-NEXUS_URL="http://repo.tavakolzadeh.ir"
+NEXUS_URL="https://repo.tavakolzadeh.ir"
 
 # New user information
 REPO_USERNAME="mojtaba"
@@ -11,11 +11,11 @@ REPO_PASSWORD="GvzxzxQc9Dd3jl"
 REPO_EMAIL="mojtaba@tavakolzadeh.ir"
 
 # Minio information
-# MINIO_ACCESS_KEY=<MINIO_ACCESS_KEY>
-# MINIO_SECRET_KEY=<MINIO_SECRET_KEY>
-# MINIO_ENDPOINT_URL=https://io.repository.mecan.ir
-# MINIO_DOCKER_BLOBSTORE_BUCKET_NAME=nexus-docker-blob
-# MINIO_APT_BLOBSTORE_BUCKET_NAME=nexus-apt-blob
+MINIO_ACCESS_KEY="Xi5wIv8zo"
+MINIO_SECRET_KEY="F5eyC9tOM5BkD7"
+MINIO_ENDPOINT_URL=https://api.object.tavakolzadeh.ir
+MINIO_DOCKER_BLOBSTORE_BUCKET_NAME=nexus-docker-blob
+MINIO_APT_BLOBSTORE_BUCKET_NAME=nexus-apt-blob
 
 # blob store name
 DOCKER_BLOB_STORE_NAME=docker
