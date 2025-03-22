@@ -1,5 +1,12 @@
 - hosts: all
   become: true
   roles:
-    - preparing-server
-    - ansible-role-containerd
+    - role: preparing-server-role
+      tags:
+        - preparing
+    - role: containerd-install-role
+      tags:
+        - containerd
+    - role: docker-install-role
+      tags:
+        - docker

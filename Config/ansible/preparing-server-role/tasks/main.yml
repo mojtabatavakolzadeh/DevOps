@@ -26,7 +26,7 @@
 - name: Add a line to a file kubernetes.list
   ansible.builtin.lineinfile:
     path: /etc/apt/sources.list.d/kubernetes.list
-    line: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/pkg-k8s/ /"
+    line: "deb [trusted=true signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/pkg-k8s /"
     create: yes
 
 # Task create user
@@ -86,27 +86,3 @@
   loop:
     - "192.168.1.4\trepo.tavakolzadeh.ir"
     - "192.168.1.4\tregistry.tavakolzadeh.ir"
-
-# # Task config static ip
-# - name: Backup existing network configuration
-#   copy:
-#     src: /etc/network/interfaces
-#     dest: /etc/network/interfaces.bak
-#     remote_src: yes
-#     mode: "0644"
-
-# - name: Apply new static IP configuration
-#   template:
-#     src: interfaces.j2
-#     dest: /etc/network/interfaces
-#     owner: root
-#     group: root
-#     mode: "0644"
-
-# - name: Apply IP configuration without reboot
-#   shell: ifdown {{ network_interface_eth0 }} && ifup {{ network_interface_eth0 }}
-#   ignore_errors: yes
-
-# - name: Apply IP configuration without reboot
-#   shell: ifdown {{ network_interface_eth1 }} && ifup {{ network_interface_eth1 }}
-#   ignore_errors: yes
