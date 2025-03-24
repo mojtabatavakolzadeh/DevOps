@@ -3,6 +3,9 @@ auth_enabled: false
 server:
   http_listen_port: 3100
 
+analytics:
+  reporting_enabled: false 
+
 ingester:
   lifecycler:
     address: 127.0.0.1

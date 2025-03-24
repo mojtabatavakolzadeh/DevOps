@@ -9,3 +9,6 @@ network_interface_eth0: "eth0"
 network_interface_eth1: "eth1"
 gateway: "192.168.56.1"
 netmask: "255.255.255.0"
+
+# Var docker config
+private_registry_1: registry.tavakolzadeh.ir

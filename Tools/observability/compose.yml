@@ -1,6 +1,6 @@
 networks:
   app_net:
-    external: false
+    external: true
     name: app_net
   web_net:
     external: true

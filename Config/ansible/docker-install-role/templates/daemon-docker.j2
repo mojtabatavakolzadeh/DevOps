@@ -1,0 +1,10 @@
+{
+    "insecure-registries" : [ "{{ private_registry_1 }}" ],
+    "registry-mirrors" : [ "https://{{ private_registry_1 }}" ],
+    "debug" : true,
+    "log-driver": "loki",
+    "log-opts": {
+      "loki-url": "https://Mojtaba:hNA6iQxwNcgZse2vZm4iLHhothC77J@loki.tavakolzadeh.ir/loki/api/v1/push",
+      "loki-batch-size": "400"
+    }
+} 

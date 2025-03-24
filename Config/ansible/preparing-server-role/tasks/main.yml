@@ -11,7 +11,8 @@
 # Update and install packages
 - name: Install a list of packages
   ansible.builtin.apt:
-    force_apt_get: yes
+    force_apt_get: true
+    update_cache: true
     name:
     - vim
     - util-linux
@@ -19,15 +20,15 @@
     - gnupg2
     - curl
 
-- name: Add Kubernetes GPG key with proxy
-  shell: curl --proxy 192.168.1.4:2334 -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-  become: yes
+# - name: Add Kubernetes GPG key with proxy
+#   shell: curl --proxy 192.168.1.4:2334 -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+#   become: yes
 
-- name: Add a line to a file kubernetes.list
-  ansible.builtin.lineinfile:
-    path: /etc/apt/sources.list.d/kubernetes.list
-    line: "deb [trusted=true signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/pkg-k8s /"
-    create: yes
+# - name: Add a line to a file kubernetes.list
+#   ansible.builtin.lineinfile:
+#     path: /etc/apt/sources.list.d/kubernetes.list
+#     line: "deb [trusted=true signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/pkg-k8s /"
+#     create: yes
 
 # Task create user
 - name: Add user user_config
@@ -86,3 +87,4 @@
   loop:
     - "192.168.1.4\trepo.tavakolzadeh.ir"
     - "192.168.1.4\tregistry.tavakolzadeh.ir"
+    - "192.168.1.4\tloki.tavakolzadeh.ir"
