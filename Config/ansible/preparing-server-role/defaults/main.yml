@@ -12,3 +12,6 @@ netmask: "255.255.255.0"
 
 # Var docker config
 private_registry_1: registry.tavakolzadeh.ir
+
+# IP traefik
+traefik_ip: "192.168.1.4"

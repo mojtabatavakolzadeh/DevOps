@@ -6,3 +6,7 @@
     state: reloaded
     enabled: yes
     daemon_reload: true
+
+# Apt update
+- name: Apt update
+  command: apt-get update

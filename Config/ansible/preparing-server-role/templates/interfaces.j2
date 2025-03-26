@@ -13,7 +13,6 @@ iface lo inet loopback
 # The primary network interface
 allow-hotplug enp0s3
 iface enp0s3 inet static
-	address {{ ansible_host }}
+	address 
 	netmask 255.255.255.0
 	gateway 192.168.56.1
-    

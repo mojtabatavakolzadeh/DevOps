@@ -39,9 +39,7 @@
     path: /etc/apt/sources.list.d/docker.list
     line: "deb [trusted=true arch={{ architecture.stdout }} signed-by=/etc/apt/keyrings/docker.asc] http://repo.tavakolzadeh.ir/repository/docker-apt/ {{ ansible_distribution_release }} stable"
     create: yes
-
-- name: Apt update
-  command: apt-get update
+  notify: Apt update
 
 - name: Install a list of packages
   ansible.builtin.apt:

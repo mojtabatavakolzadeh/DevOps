@@ -26,8 +26,6 @@ services:
       - "api.object.tavakolzadeh.ir:172.20.0.2"
     # privileged: true
     # network_mode: host
-    ports:
-      - 8084:8084
 
     # Congig for traefik
     labels:

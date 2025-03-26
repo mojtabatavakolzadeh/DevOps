@@ -161,7 +161,8 @@ services:
       - "2222:22"
     networks:
       - web_net
-      - gitlab-network
+      - app_net
 
     extra_hosts:  # set hostname traefik for loadbalance
       - "api.object.tavakolzadeh.ir:172.20.0.2"
+      - "kube-api.tavakolzadeh.ir:172.20.0.2"

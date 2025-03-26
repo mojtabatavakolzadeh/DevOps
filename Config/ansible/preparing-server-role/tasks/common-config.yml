@@ -1,0 +1,71 @@
+---
+# Add repos
+- name: File sources.list
+  template:
+    src: sources-list.j2
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Apt update
+
+# Install packages
+- name: Install a list of packages
+  ansible.builtin.apt:
+    force_apt_get: true
+    name:
+      - vim
+      - util-linux
+      - sudo
+      - gnupg2
+      - curl
+      - dnsutils
+
+# Task create user
+- name: Add user user_config
+  ansible.builtin.user:
+    name: "{{ user_config }}"
+    state: present
+    comment: User for config
+    create_home: true
+    password: "{{ 'cXwhXTncsa2BAq' | password_hash('sha512') }}"
+    group: sudo
+    shell: /bin/bash
+
+# Set hostname
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Update /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "127.0.0.1\t{{ inventory_hostname }}"
+    regexp: "^127.0.0.1"
+    state: present
+
+- name: Add all inventory hosts to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ hostvars[item]['ansible_host'] }}\t{{ item }}"
+    regexp: "^{{ hostvars[item]['ansible_host'] }}"
+    state: present
+  loop: "{{ groups['all'] }}"
+
+- name: Remove existing IP entry for this host
+  lineinfile:
+    path: /etc/hosts
+    regexp: "^{{ hostvars[inventory_hostname]['ansible_host'] }}\\s+.*"
+    state: absent
+
+- name: Add multiple host entries to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item }}"
+    state: present
+  loop:
+    - "{{ traefik_ip }}\trepo.tavakolzadeh.ir"
+    - "{{ traefik_ip }}\tregistry.tavakolzadeh.ir"
+    - "{{ traefik_ip }}\tloki.tavakolzadeh.ir"
+    - "192.168.56.10\tkube-api.tavakolzadeh.ir"
+    - "{{ traefik_ip }}\tgit.tavakolzadeh.ir"
