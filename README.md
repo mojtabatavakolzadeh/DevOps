@@ -5,8 +5,9 @@
 4- write tast disable swap
 5- add dns server 
 6- command issue certificate with dns challenge `sudo certbot certonly -d cluster.tavakolzadeh.ir --preferred-challenges dns-01 --manual --dry-run`
-۷- 
-
+7- create user in kubernetes for cicd 
+8- add config hosts dns and network in gitlab runners
+9- add helm charts and solutions pull bitnami . (first pull and push to hosted helm)
 
 
 

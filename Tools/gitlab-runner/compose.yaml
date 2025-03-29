@@ -11,11 +11,10 @@ services:
        - web_net
       extra_hosts:  # set hostname traefik for loadbalance
         - "git.tavakolzadeh.ir:172.20.0.2"
+        - "kube-api.tavakolzadeh.ir:192.168.56.10"
+        - "registry.tavakolzadeh.ir:172.20.0.2"
 
 networks:
-  #  gitlab-network:
-  #    name: gitlab-network
-  #    external: true
    web_net:
      name: web_net
      external: true

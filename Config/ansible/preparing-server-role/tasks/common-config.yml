@@ -67,5 +67,5 @@
     - "{{ traefik_ip }}\trepo.tavakolzadeh.ir"
     - "{{ traefik_ip }}\tregistry.tavakolzadeh.ir"
     - "{{ traefik_ip }}\tloki.tavakolzadeh.ir"
-    - "192.168.56.10\tkube-api.tavakolzadeh.ir"
+    - "192.168.1.4\tkube-api.tavakolzadeh.ir"
     - "{{ traefik_ip }}\tgit.tavakolzadeh.ir"

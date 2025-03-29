@@ -29,6 +29,15 @@ services:
       GITLAB_OMNIBUS_CONFIG: |
         # Gitlab external url
         external_url 'https://${GIT_DOMAIN}'
+        gitlab_kas_external_url "wss://${GIT_DOMAIN}/-/kubernetes-agent/"
+
+        # config kas
+        # gitlab_kas['listen_address'] = 'localhost:8150'
+        # gitlab_kas['listen_network'] = 'tcp'
+        # gitlab_kas['listen_websocket'] = true
+        # gitlab_kas['internal_api_listen_network'] = 'tcp'
+        # gitlab_kas['internal_api_listen_address'] = 'localhost:8153'
+
 
         # Change the initial default admin password
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
@@ -44,13 +53,15 @@ services:
         nginx['http2_enabled'] = true
         nginx['listen_port'] = 80
         nginx['listen_https'] = false
-        nginx['http2_enabled'] = false
         nginx['proxy_set_headers'] = {
           "Host" => "$$http_host",
           "X-Real-IP" => "$$remote_addr",
           "X-Forwarded-For" => "$$proxy_add_x_forwarded_for",
           "X-Forwarded-Proto" => "https",
-          "X-Forwarded-Ssl" => "on"
+          "X-Forwarded-Ssl" => "on",
+          "Upgrade" => "$$http_upgrade",
+          "Connection" => "Upgrade",
+          "Sec-WebSocket-Protocol" => "ws-tunnel"
         }
 
         # ZOHO SMTP configuration
@@ -152,6 +163,18 @@ services:
       - traefik.http.routers.gitlab-registry-secure.tls.options=default
       - traefik.http.routers.gitlab-registry-secure.tls.certresolver=mycert
       - traefik.http.services.gitlab-registry.loadbalancer.server.port=5100
+      # GitLab KAS WebSocket Config
+      - traefik.http.routers.gitlab-kas.entrypoints=https
+      - traefik.http.routers.gitlab-kas.rule=Host(`${GIT_DOMAIN}`) && PathPrefix(`/-/kubernetes-agent/`)
+      - traefik.http.routers.gitlab-kas.tls=true
+      - traefik.http.routers.gitlab-kas.tls.certresolver=mycert
+      - traefik.http.routers.gitlab-kas.service=gitlab-kas
+      - traefik.http.services.gitlab-kas.loadbalancer.server.port=80
+      - traefik.http.routers.gitlab-kas.middlewares=websocket-headers
+      - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Upgrade=websocket
+      - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Connection=Upgrade
+      - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Sec-WebSocket-Protocol=ws-tunnel
+
     volumes:
       - gitlab_backup:/var/opt/gitlab/backups
       - gitlab_data:/var/opt/gitlab
@@ -165,4 +188,5 @@ services:
 
     extra_hosts:  # set hostname traefik for loadbalance
       - "api.object.tavakolzadeh.ir:172.20.0.2"
-      - "kube-api.tavakolzadeh.ir:172.20.0.2"
+      - "kube-api.tavakolzadeh.ir:192.168.56.10"
+      - "git.tavakolzadeh.ir:172.20.0.2"

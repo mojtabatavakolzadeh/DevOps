@@ -97,3 +97,14 @@ services:
       - traefik.http.routers.github-secure.service=github-secure
       - traefik.http.routers.github-secure.tls.certresolver=mycert
       - traefik.http.services.github-secure.loadbalancer.server.port=8086
+      - traefik.http.routers.push-image.entrypoints=http
+      - traefik.http.routers.push-image.rule=Host(`${PUSH_IMAGE}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.push-image.middlewares=https-redirect
+      - traefik.http.routers.push-image-secure.entrypoints=https
+      - traefik.http.routers.push-image.service=push-image-secure
+      - traefik.http.routers.push-image-secure.rule=Host(`${PUSH_IMAGE}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.push-image-secure.tls=true
+      - traefik.http.routers.push-image-secure.tls.options=default
+      - traefik.http.routers.push-image-secure.service=push-image-secure
+      - traefik.http.routers.push-image-secure.tls.certresolver=mycert
+      - traefik.http.services.push-image-secure.loadbalancer.server.port=8089
