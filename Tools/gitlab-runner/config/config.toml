@@ -27,11 +27,11 @@ shutdown_timeout = 0
     oom_kill_disable = false
     disable_cache = false
     volumes = ["/cache"]
-    shm_size = 0
-    network_mtu = 0
+    extra_hosts = ["git.tavakolzadeh.ir:172.20.0.2", "kube-api.tavakolzadeh.ir:192.168.56.10", "repo.tavakolzadeh.ir:172.20.0.2"]
     network_mode = "web_net"
-    extra_hosts = ["git.tavakolzadeh.ir:172.20.0.2","kube-api.tavakolzadeh.ir:192.168.56.10","repo.tavakolzadeh.ir:172.20.0.2"]
+    shm_size = 0
     helper_image = "registry.tavakolzadeh.ir/gitlab-org/gitlab-runner/gitlab-runner-helper:custom"
+    network_mtu = 0
 
 [[runners]]
   name = "runner for project tools devops"
@@ -54,8 +54,8 @@ shutdown_timeout = 0
     oom_kill_disable = false
     disable_cache = false
     volumes = ["/cache"]
-    shm_size = 0
-    network_mtu = 0
+    extra_hosts = ["git.tavakolzadeh.ir:172.20.0.2", "kube-api.tavakolzadeh.ir:192.168.56.10", "repo.tavakolzadeh.ir:172.20.0.2"]
     network_mode = "web_net"
-    extra_hosts = ["git.tavakolzadeh.ir:172.20.0.2","kube-api.tavakolzadeh.ir:192.168.56.10","repo.tavakolzadeh.ir:172.20.0.2"]
+    shm_size = 0
     helper_image = "registry.tavakolzadeh.ir/gitlab-org/gitlab-runner/gitlab-runner-helper:custom"
+    network_mtu = 0
