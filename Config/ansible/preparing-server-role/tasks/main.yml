@@ -1,0 +1,14 @@
+---
+# Configs nodes k8s
+- name: configs nodes k8s
+  ansible.builtin.include_tasks:
+    file: kube-node.yml
+  tags:
+    - config-node-k8s
+
+# Common configs server
+- name: common configs
+  ansible.builtin.include_tasks:
+    file: common-config.yml
+  tags:
+    - common-config

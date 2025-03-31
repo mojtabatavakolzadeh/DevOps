@@ -1,0 +1,283 @@
+networks:
+  app_net:
+    external: true
+    name: app_net
+  web_net:
+    external: true
+    name: web_net
+
+volumes:
+  prometheus_data:
+    name: prometheus_data
+  alertmanager_data:
+    name: alertmanager_data
+  pushgateway_data:
+    name: pushgateway_data
+  mimir1_data:
+    name: mimir1_data
+  mimir2_data:
+    name: mimir2_data
+  mimir3_data:
+    name: mimir3_data
+  loki_data:
+    name: loki_data
+  grafana_data:
+    name: grafana_data
+
+services:
+# Prometheus
+  prometheus:
+    image: repo.tavakolzadeh.ir:8082/prom/prometheus:latest
+    restart: ${RESTART_POLICY}
+    container_name: prometeheus
+    volumes:
+      - prometheus_data:/prometheus
+      - ./prometheus:/etc/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=30d
+      - --storage.tsdb.retention.size=150GB
+      - --web.enable-lifecycle
+    networks:
+      - web_net
+      - app_net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_net
+      - traefik.http.routers.prometheus.entrypoints=http
+      - traefik.http.routers.prometheus.rule=Host(`${PROSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.prometheus.middlewares=https-redirect
+      - traefik.http.routers.prometheus-secure.entrypoints=https
+      - traefik.http.routers.prometheus-secure.rule=Host(`${PROSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.prometheus-secure.tls=true
+      - traefik.http.routers.prometheus-secure.tls.options=default
+      - traefik.http.routers.prometheus-secure.middlewares=web-auth
+      - traefik.http.routers.prometheus-secure.tls.certresolver=mycert
+      - traefik.http.services.prometheus.loadbalancer.server.port=9090
+
+# Grafana
+  grafana:
+    image: repo.tavakolzadeh.ir:8082/grafana/grafana:latest
+    restart: ${RESTART_POLICY}
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/:/etc/grafana/provisioning/
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USERNAME}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_INSTALL_PLUGINS=${GRAFANA_INSTALL_PLUGINS}
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_PATHS_DATA=/var/lib/grafana
+    networks:
+      - web_net
+      - app_net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_net
+      - traefik.http.routers.grafana.entrypoints=http
+      - traefik.http.routers.grafana.rule=Host(`${GRASUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.grafana.middlewares=https-redirect
+      - traefik.http.routers.grafana-secure.entrypoints=https
+      - traefik.http.routers.grafana-secure.rule=Host(`${GRASUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.grafana-secure.tls=true
+      - traefik.http.routers.grafana-secure.tls.options=default
+      - traefik.http.routers.grafana-secure.tls.certresolver=mycert
+      - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+# Alertmanager
+  alertmanager:
+    image: repo.tavakolzadeh.ir:8082/prom/alertmanager:latest
+    restart: ${RESTART_POLICY}
+    container_name: alertmanager
+    volumes:
+      - alertmanager_data:/alertmanager
+      - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    networks:
+      - web_net
+      - app_net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_net
+      - traefik.http.routers.alert.entrypoints=http
+      - traefik.http.routers.alert.rule=Host(`${ALESUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.alert.middlewares=https-redirect
+      - traefik.http.routers.alert-secure.entrypoints=https
+      - traefik.http.routers.alert-secure.rule=Host(`${ALESUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.alert-secure.tls=true
+      - traefik.http.routers.alert-secure.tls.options=default
+      - traefik.http.routers.alert-secure.middlewares=web-auth
+      - traefik.http.routers.alert-secure.tls.certresolver=mycert
+      - traefik.http.services.alert.loadbalancer.server.port=9093
+
+# Pushgateway
+  pushgateway:
+    image: repo.tavakolzadeh.ir:8082/prom/pushgateway:latest
+    restart: ${RESTART_POLICY}
+    container_name: pushgateway
+    command:
+      - --persistence.file=/tmp/pushgateway.store
+      - --persistence.interval=1m
+    volumes:
+      - pushgateway_data:/tmp/
+    networks:
+      - web_net
+      - app_net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_net
+      - traefik.http.routers.push.entrypoints=http
+      - traefik.http.routers.push.rule=Host(`${PGWSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.push.middlewares=https-redirect
+      - traefik.http.routers.push-secure.entrypoints=https
+      - traefik.http.routers.push-secure.rule=Host(`${PGWSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.push-secure.tls=true
+      - traefik.http.routers.push-secure.tls.options=default
+      - traefik.http.routers.push-secure.middlewares=web-auth
+      - traefik.http.routers.push-secure.tls.certresolver=mycert
+      - traefik.http.services.push.loadbalancer.server.port=9091
+
+# Cadvisor
+  cadvisor:
+    image: repo.tavakolzadeh.ir:8082/ahmadrafiee/cadvisor:latest
+    command: --disable_metrics=disk,udp,percpu
+    restart: ${RESTART_POLICY}
+    hostname: cadvisor
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    networks:
+      - app_net
+
+# Blackbox-exporter
+  blackbox-exporter:
+    image: repo.tavakolzadeh.ir:8082/prom/blackbox-exporter:latest
+    restart: ${RESTART_POLICY}
+    hostname: blackbox-exporter
+    container_name: blackbox-exporter
+    command:
+      - '--config.file=/etc/blackboxexporter/blackbox-exporter.yml'
+    volumes:
+      - ./blackbox:/etc/blackboxexporter
+    networks:
+      - app_net
+# Node-exporter
+  node-exporter:
+    image: repo.tavakolzadeh.ir:8082/prom/node-exporter:latest
+    restart: ${RESTART_POLICY}
+    hostname: node_exporter
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    networks:
+      - app_net
+
+# Loki
+  loki:
+    image: repo.tavakolzadeh.ir:8082/grafana/loki:latest
+    command: -config.file=/etc/loki/loki.yml -config.expand-env=true
+    restart: ${RESTART_POLICY}
+    container_name: loki
+    user: root
+    volumes:
+      - loki_data:/tmp/loki
+      - ./loki/loki.yml:/etc/loki/loki.yml
+    networks:
+      - web_net
+      - app_net
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web_net
+      - traefik.http.routers.loki.entrypoints=http
+      - traefik.http.routers.loki.rule=Host(`${LOGSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.loki.middlewares=https-redirect
+      - traefik.http.routers.loki-secure.entrypoints=https
+      - traefik.http.routers.loki-secure.rule=Host(`${LOGSUB}.${DOMAIN_ADDRESS}`)
+      - traefik.http.routers.loki-secure.tls=true
+      - traefik.http.routers.loki-secure.tls.options=default
+      - traefik.http.routers.loki-secure.middlewares=web-auth
+      - traefik.http.routers.loki-secure.tls.certresolver=mycert
+      - traefik.http.services.loki.loadbalancer.server.port=3100
+
+# Promtail
+  promtail:
+    image: repo.tavakolzadeh.ir:8082/grafana/promtail:latest
+    restart: ${RESTART_POLICY}
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./promtail/promtail.yml:/etc/promtail/promtail.yml
+    command: -config.file=/etc/promtail/promtail.yml
+    networks:
+      - app_net
+
+# Cluster mimir
+  mimir1:
+    image: repo.tavakolzadeh.ir:8082/grafana/mimir:latest
+    command: ["-config.file=/etc/mimir/mimir.yml"]
+    hostname: mimir1
+    container_name: mimir1
+    restart: ${RESTART_POLICY}
+    volumes:
+      - ./mimir/mimir.yml:/etc/mimir/mimir.yml
+      - ./mimir/alertmanager-fallback-config.yaml:/etc/mimir/alertmanager-fallback-config.yaml
+      - mimir1_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app_net
+
+  mimir2:
+    image: repo.tavakolzadeh.ir:8082/grafana/mimir:latest
+    command: ["-config.file=/etc/mimir/mimir.yml"]
+    hostname: mimir2
+    container_name: mimir2
+    restart: ${RESTART_POLICY}
+    volumes:
+      - ./mimir/mimir.yml:/etc/mimir/mimir.yml
+      - ./mimir/alertmanager-fallback-config.yaml:/etc/mimir/alertmanager-fallback-config.yaml
+      - mimir2_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app_net
+
+  mimir3:
+    image: repo.tavakolzadeh.ir:8082/grafana/mimir:latest
+    command: ["-config.file=/etc/mimir/mimir.yml"]
+    hostname: mimir3
+    container_name: mimir3
+    restart: ${RESTART_POLICY}
+    volumes:
+      - ./mimir/mimir.yml:/etc/mimir/mimir.yml
+      - ./mimir/alertmanager-fallback-config.yaml:/etc/mimir/alertmanager-fallback-config.yaml
+      - mimir3_data:/data
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - app_net

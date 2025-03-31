@@ -47,16 +47,16 @@
     "final": "dns-remote",
     "static_ips": {
       "sky.rethinkdns.com": [
-        "188.114.97.6",
-        "188.114.96.6",
-        "2a06:98c1:3121::6",
-        "2a06:98c1:3120::6",
+        "188.114.97.3",
+        "188.114.96.3",
+        "2a06:98c1:3120::3",
+        "2a06:98c1:3121::3",
         "104.17.147.22",
         "104.17.148.22",
-        "188.114.97.6",
-        "188.114.96.6",
-        "2a06:98c1:3121::6",
-        "2a06:98c1:3120::6"
+        "188.114.96.3",
+        "188.114.97.3",
+        "2a06:98c1:3121::3",
+        "2a06:98c1:3120::3"
       ]
     },
     "independent_cache": true
@@ -65,7 +65,7 @@
     {
       "type": "mixed",
       "tag": "mixed-in",
-      "listen": "127.0.0.1",
+      "listen": "0.0.0.0",
       "listen_port": 2334,
       "sniff": true,
       "sniff_override_destination": true,
@@ -74,7 +74,7 @@
     {
       "type": "direct",
       "tag": "dns-in",
-      "listen": "127.0.0.1",
+      "listen": "0.0.0.0",
       "listen_port": 6450,
       "override_address": "1.1.1.1",
       "override_port": 53
@@ -188,7 +188,7 @@
     },
     "clash_api": {
       "external_controller": "127.0.0.1:6756",
-      "secret": "o7CdthzqBbEIuELN"
+      "secret": "b6O8C3OelRDrDw_i"
     }
   }
 }

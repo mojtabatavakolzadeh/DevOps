@@ -1,0 +1,34 @@
+---
+# Config private registry
+- name: Log into private registry and force re-authorization
+  community.docker.docker_login:
+    registry: registry.tavakolzadeh.ir
+    username: mojtaba
+    password: "GvzxzxQc9Dd3jl"
+    reauthorize: yes
+
+- name: Insecure private registry
+  ansible.builtin.template:
+    src: daemon-docker.j2
+    dest: /etc/docker/daemon.json
+    owner: root
+    group: root
+    mode: "0644"
+    force: true
+  notify: reload docker
+
+# Manage plugins
+- name: Install plugins
+  community.docker.docker_plugin:
+    plugin_name: grafana/loki-docker-driver
+    state: present
+    alias: loki
+
+# Enable plugin docker
+- name: Enable the plugin
+  community.docker.docker_plugin:
+    plugin_name: loki
+    state: enable
+    # plugin_options:
+    #   LOKI_URL: "https://loki.tavakolzadeh.ir"
+  notify: reload docker

@@ -1,0 +1,14 @@
+---
+# Install docker
+- name: Install docker
+  ansible.builtin.include_tasks:
+    file: install-docker.yml
+  tags: 
+    - install-docker
+
+# Additional configs
+- name: Additional configs
+  ansible.builtin.include_tasks:
+    file: conf-docker.yml
+  tags:
+    - config-docker

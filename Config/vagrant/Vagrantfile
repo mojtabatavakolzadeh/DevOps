@@ -1,0 +1,52 @@
+IMAGE_Debian_12 = "bento/debian-12"
+
+Vagrant.configure("2") do |config|
+  # Enable the proxy plugin
+  # if Vagrant.has_plugin?("vagrant-proxyconf")
+  #   config.proxy.http     = "http://192.168.1.3:2334"
+  #   config.proxy.https    = "http://192.168.1.3:2334"
+  #   config.proxy.no_proxy = "localhost,127.0.0.1,*.tavakolzadeh.ir"
+  # end
+ 
+  # Define the first Debian VM
+  config.vm.define "master-node1" do |debian1|
+    debian1.vm.box = IMAGE_Debian_12
+    debian1.vm.network "private_network", ip: "192.168.56.10"
+    # debian1.ssh.host = "192.168.56.10"
+    debian1.vm.hostname = "master-node1"
+    debian1.vm.provider "virtualbox" do |vb|
+      vb.name = "master-node1"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+    debian1.vm.provision :shell, path: "bootstrap.sh"
+  end
+
+  # Define the second Debian VM
+  config.vm.define "worker-node1" do |debian2|
+    debian2.vm.box = IMAGE_Debian_12
+    debian2.vm.network "private_network", ip: "192.168.56.15"
+    # debian2.ssh.host = "192.168.56.15"
+    debian2.vm.hostname = "worker-node1"
+    debian2.vm.provider "virtualbox" do |vb|
+      vb.name = "worker-node1"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+    debian2.vm.provision :shell, path: "bootstrap.sh"
+  end
+
+  # Define the third Debian VM
+  config.vm.define "worker-node2" do |debian3|
+    debian3.vm.box = IMAGE_Debian_12
+    debian3.vm.network "private_network", ip: "192.168.56.16"
+    # debian3.ssh.host = "192.168.56.16"
+    debian3.vm.hostname = "worker-node2"
+    debian3.vm.provider "virtualbox" do |vb|
+      vb.name = "worker-node2"
+      vb.memory = 2048
+      vb.cpus = 2
+    end
+    debian3.vm.provision :shell, path: "bootstrap.sh"
+  end
+end

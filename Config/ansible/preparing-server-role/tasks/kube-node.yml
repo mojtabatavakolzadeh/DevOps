@@ -1,0 +1,25 @@
+---
+# Disable swap
+- name: disable swap
+  command: sudo swapoff -a
+  changed_when: true
+  when: ansible_swaptotal_mb > 0
+
+- name: remove swap from fstab
+  lineinfile:
+    path: '/etc/fstab'
+    regexp: '\sswap\s'
+    state: 'absent'
+
+# Configs repos
+- name: Add Kubernetes GPG key with proxy
+  shell: curl --proxy 192.168.1.4:2334 -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --yes --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+  # become: yes
+  notify: Apt update
+
+- name: Add a line to a file kubernetes.list
+  ansible.builtin.lineinfile:
+    path: /etc/apt/sources.list.d/kubernetes.list
+    line: "deb [trusted=true signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] http://repo.tavakolzadeh.ir/repository/k8s-package/ /"
+    create: yes
+  notify: Apt update
