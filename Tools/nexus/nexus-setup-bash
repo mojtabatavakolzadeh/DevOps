@@ -436,7 +436,7 @@ curl -k -X 'POST' \
     "httpPort": 8087
   },
   "dockerProxy": {
-    "indexType": "REGISTRY"
+    "indexType": "HUB"
   }
 }'
 
@@ -509,6 +509,67 @@ curl -k -X 'POST' \
     "v1Enabled": true,
     "forceBasicAuth": false,
     "httpPort": 8089,
+  }
+}'
+
+# Pyathon packages
+# 1
+curl -k -X 'POST' \
+  ''${NEXUS_URL}'/service/rest/v1/repositories/pypi/proxy' \
+  -u "${ADMIN_USERNAME}:${ADMIN_PASSWORD}" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "python-packages",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true
+  },
+  "cleanup": {
+    "policyNames": [
+      "string"
+    ]
+  },
+  "proxy": {
+    "remoteUrl": "https://pypi.org",
+    "contentMaxAge": 1440,
+    "metadataMaxAge": 1440
+  },
+  "negativeCache": {
+    "enabled": true,
+    "timeToLive": 1440
+  },
+  "httpClient": {
+    "blocked": false,
+    "autoBlock": true
+  },
+  "routingRule": "string",
+  "replication": {
+    "preemptivePullEnabled": false,
+    "assetPathRegex": "string"
+  },
+  "pypi": {
+    "removeQuarantined": true
+  }
+}'
+#2
+curl -k -X 'POST' \
+  ''${NEXUS_URL}'/service/rest/v1/repositories/pypi/group' \
+  -u "${ADMIN_USERNAME}:${ADMIN_PASSWORD}" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "python-registry",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true
+  },
+  "group": {
+    "memberNames": [
+      "python-packages"
+    ]
   }
 }'
 

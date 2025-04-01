@@ -8,8 +8,8 @@
 7- create user in kubernetes for cicd 
 8- add config hosts dns and network in gitlab runners
 9- add helm charts and solutions pull bitnami . (first pull and push to hosted helm)
-
-
-
+10- use of keyword services in pipeline cicd gitlab
+11- enable ssh gitlab
+12- https://gitlab.hpc.ut.ee/ci-cd-components
 # Weekly sessions
 1- why important question process boot linux in interviews
