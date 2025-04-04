@@ -27,6 +27,7 @@ services:
       - "--providers.docker.network=web_net"
       - "--entrypoints.http.address=:80"
       - "--entrypoints.https.address=:443"
+      - "--entrypoints.ssh.address=:2222"
       - "--metrics.prometheus=true"
       - "--entryPoints.metrics.address=:8082"
       - "--metrics.prometheus.entryPoint=metrics"
@@ -35,6 +36,7 @@ services:
       - "--certificatesresolvers.mycert.acme.dnschallenge=true"
       - "--certificatesresolvers.mycert.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.mycert.acme.dnschallenge.delaybeforecheck=60"
+      - "--providers.file.filename=/etc/traefik/nginx-config.yml"
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
@@ -43,9 +45,11 @@ services:
       - 80:80
       - 443:443
       - 6443:6443
+      - 2222:2222
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme
+      - ./nginx-config.yml:/etc/traefik/nginx-config.yml
     healthcheck:
       test: wget --quiet --tries=1 --spider http://localhost:8080/ping || exit 1
       interval: 5s

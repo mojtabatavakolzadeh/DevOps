@@ -38,6 +38,10 @@ services:
         # gitlab_kas['internal_api_listen_network'] = 'tcp'
         # gitlab_kas['internal_api_listen_address'] = 'localhost:8153'
 
+        # ssh config
+        gitlab_sshd['enable'] = true
+        gitlab_sshd['listen_address'] = '0.0.0.0:2222'
+        gitlab_rails['gitlab_shell_ssh_port'] = 2222
 
         # Change the initial default admin password
         gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
@@ -174,14 +178,18 @@ services:
       - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Upgrade=websocket
       - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Connection=Upgrade
       - traefik.http.middlewares.websocket-headers.headers.customrequestheaders.Sec-WebSocket-Protocol=ws-tunnel
+      # SSH over TCP Configuration
+      - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
+      - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
+      - traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh
+      - traefik.tcp.services.gitlab-ssh.loadbalancer.server.port=2222
 
     volumes:
       - gitlab_backup:/var/opt/gitlab/backups
       - gitlab_data:/var/opt/gitlab
       - gitlab_logs:/var/log/gitlab
       - gitlab_config:/etc/gitlab
-    ports:
-      - "2222:22"
+
     networks:
       - web_net
       - app_net

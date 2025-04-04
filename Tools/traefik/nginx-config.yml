@@ -1,0 +1,28 @@
+http:
+  routers:
+    nginx:
+      entryPoints:
+        - http
+      rule: "Host(`nginx.tavakolzadeh.ir`)"
+      middlewares:
+        - https-redirect
+      service: nginx
+
+    nginx-secure:
+      entryPoints:
+        - https
+      rule: "Host(`nginx.tavakolzadeh.ir`)"
+      tls:
+        certResolver: mycert
+      service: nginx
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+
+  services:
+    nginx:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.56.10:80"

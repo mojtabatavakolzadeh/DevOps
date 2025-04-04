@@ -11,5 +11,9 @@
 10- use of keyword services in pipeline cicd gitlab
 11- enable ssh gitlab
 12- https://gitlab.hpc.ut.ee/ci-cd-components
+13- test auto scaling
+14- how to add agent kas
+
+
 # Weekly sessions
 1- why important question process boot linux in interviews
