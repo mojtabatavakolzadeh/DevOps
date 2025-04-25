@@ -69,3 +69,14 @@
     - "{{ traefik_ip }}\tloki.tavakolzadeh.ir"
     - "192.168.1.4\tkube-api.tavakolzadeh.ir"
     - "{{ traefik_ip }}\tgit.tavakolzadeh.ir"
+
+- name: Add environments to /etc/environment
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item }}"
+    state: present
+    create: yes
+  loop:
+    - 'http_proxy="http://192.168.1.4:2334"'
+    - 'https_proxy="http://192.168.1.4:2334"'
+    - 'no_proxy="localhost,127.0.0.1,::1,registry.tavakolzadeh.ir,git.tavakolzadeh.ir,repo.tavakolzadeh.ir,default.svc.cluster.local,svc.cluster.local,cluster.local,10.233.64.0/18,10.233.0.0/18,fd85:ee78:d8a6:8607::1000/116,fd85:ee78:d8a6:8607::1:0000/112"'

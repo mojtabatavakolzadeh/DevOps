@@ -1,0 +1,70 @@
+http:
+  routers:
+    nginx:
+      entryPoints:
+        - http
+      rule: "Host(`nginx.tavakolzadeh.ir`)"
+      middlewares:
+        - https-redirect
+      service: nginx
+
+    nginx-secure:
+      entryPoints:
+        - https
+      rule: "Host(`nginx.tavakolzadeh.ir`)"
+      tls:
+        certResolver: mycert
+      service: nginx
+
+    keycloak:
+      entryPoints:
+        - http
+      rule: "Host(`keycloak.tavakolzadeh.ir`)"
+      middlewares:
+        - https-redirect
+      service: keycloak
+
+    keycloak-secure:
+      entryPoints:
+        - https
+      rule: "Host(`keycloak.tavakolzadeh.ir`)"
+      tls:
+        certResolver: mycert
+      service: keycloak
+
+    keycloak-admin:
+      entryPoints:
+        - http
+      rule: "Host(`keycloak-admin.tavakolzadeh.ir`)"
+      middlewares:
+        - https-redirect
+      service: keycloak-admin
+
+    keycloak-admin-secure:
+      entryPoints:
+        - https
+      rule: "Host(`keycloak-admin.tavakolzadeh.ir`)"
+      tls:
+        certResolver: mycert
+      service: keycloak-admin
+
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+
+  services:
+    nginx:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.56.10:80"
+
+    keycloak:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.56.10:80"
+
+    keycloak-admin:
+      loadBalancer:
+        servers:
+          - url: "http://192.168.56.10:80"

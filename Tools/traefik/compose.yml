@@ -36,7 +36,7 @@ services:
       - "--certificatesresolvers.mycert.acme.dnschallenge=true"
       - "--certificatesresolvers.mycert.acme.dnschallenge.provider=cloudflare"
       - "--certificatesresolvers.mycert.acme.dnschallenge.delaybeforecheck=60"
-      - "--providers.file.filename=/etc/traefik/nginx-config.yml"
+      - "--providers.file.filename=/etc/traefik/dynamic-config.yml"
     environment:
       - CF_API_EMAIL=${CF_API_EMAIL}
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
@@ -49,7 +49,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-acme:/acme
-      - ./nginx-config.yml:/etc/traefik/nginx-config.yml
+      - ./dynamic-config.yml:/etc/traefik/dynamic-config.yml
     healthcheck:
       test: wget --quiet --tries=1 --spider http://localhost:8080/ping || exit 1
       interval: 5s

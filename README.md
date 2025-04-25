@@ -13,6 +13,11 @@
 12- https://gitlab.hpc.ut.ee/ci-cd-components
 13- test auto scaling
 14- how to add agent kas
+15- how to use vault in ansible 
+16- how to use vault in token management
+17- add no-proxy for common-config ansible 
+18- change systemd-resolved for listen query dns
+
 
 
 # Weekly sessions
