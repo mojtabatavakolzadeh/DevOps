@@ -66,7 +66,7 @@ You’ll find something useful here!
 Pull requests are welcome!
 If you find a bug, have a feature request, or want to improve something, feel free to open an issue.
 
-    Note: This repository is intended for learning and improvement purposes. Contributions that help make DevOps concepts easier and more practical are highly appreciated!
+**Note: This repository is intended for learning and improvement purposes. Contributions that help make DevOps concepts easier and more practical are highly appreciated!**
 
 ## 🙌 About Me
 
