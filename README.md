@@ -36,29 +36,29 @@ This repository aims to be a reference hub: practical, simple, and focused on re
 
 Whether you are:
 
-    Just starting your DevOps journey 🚀
+* Just starting your DevOps journey 🚀
 
-    Preparing for DevOps job interviews 💻
+* Preparing for DevOps job interviews 💻
 
-    Building your own homelab 🌐
+* Building your own homelab 🌐
 
-    Moving from "theory" to "hands-on" work 🔥
+* Moving from "theory" to "hands-on" work 🔥
 
 You’ll find something useful here!
 
 ## 🛠️ Technologies Covered
 
-    Containers: Docker, Docker Compose
+* Containers: Docker, Docker Compose
 
-    Orchestration: Kubernetes, Minikube, Helm
+* Orchestration: Kubernetes, Minikube, Helm
 
-    CI/CD: GitHub Actions, GitLab CI/CD
+* CI/CD: GitHub Actions, GitLab CI/CD
 
-    IaC: Terraform, Ansible
+* IaC: Terraform, Ansible
 
-    Monitoring: Prometheus, Grafana, Loki
+* Monitoring: Prometheus, Grafana, Loki
 
-    Scripting: Bash, Python
+* Scripting: Bash, Python
 
 
 ## 🤝 Contributing
